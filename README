@@ -1,0 +1,81 @@
+Overview
+========
+
+An util lib for financial sum convertion from a representation for view(22.38 -
+i.e. floating value, fractional form) to representation for processing(2238 -
+i.e. integer value, integer form) and vice versa. An integer value is need to
+do integer arithmetic to eliminate calculation errors due to inexact nature of
+floating point values.
+
+Synopsis
+========
+
+finsum.parse(SUM)
+finsum._parse(SUM, FPDQ, FPS)
+finsum.fmt(SUM)
+finsum._fmt(SUM, FPDQ, FPS)
+finsum.is_correct(SUM)
+finsum._is_correct(SUM, FPDQ, FPS)
+
+Description
+===========
+
+finsum._parse function parses SUM(in a fractional form) and returns integer
+representation for this value that will be used for later calculations. The
+function args are:
+SUM  - a sum(in a fractional form) to convert
+FPDQ - a fractional part digits quantity to be returned
+FPS  - a fractional part separator(string or regexp)
+
+finsum.parse function just calls finsum._parse with FPDQ parameter set to 2 and
+FPS parameter set to /[,.]/ . If this default parse() is not suitable, then
+it can be replaced.
+
+If finsum.ignore_errors is set to 1, then there are no errors on
+too large fractional part(it simply truncated).
+
+finsum._fmt function formats SUM(in an integer form) as fractional textual form.
+The function args are:
+SUM  - a sum(in an integer form) to format
+FPDQ - a fractional part digits quantity in SUM and in a result
+FPS  - a fractional part separator(string)
+
+finsum.fmt function just calls finsum._fmt with FPDQ parameter set to 2 and
+FPS parameter set to "." . If this default fmt() is not suitable, then
+it can be replaced.
+
+finsum._is_correct function checks that a SUM string is a syntactically correct
+money sum in a fractional form. The function args are:
+SUM  - a sum(in an fractional form) to check
+FPDQ - a fractional part digits quantity in SUM
+FPS  - a fractional part separator(string)
+
+finsum.is_correct function just calls finsum._is_correct with FPDQ parameter
+set to 2 and FPS parameter set to /[,.]/ . If this default is_correct() is not
+suitable, then it can be replaced.
+
+finsum.version variable contains a version of this library.
+
+
+Examples
+========
+
+From js-console:
+
+>> finsum.parse(" 12.34  ")
+1234
+>> finsum._parse(" 12.34  ", 4, ".")
+123400
+>> finsum.fmt(1234)
+"12.34"
+>> finsum._fmt(1234, 2, ",")
+"12,34"
+>> finsum._fmt(1234, 4, ",")
+"0,1234"
+>> finsum.is_correct(" 12,34  ")
+1
+>> finsum.is_correct(" 12,344  ")
+0
+>> finsum._is_correct(" 12,344  ", 3, /[,.]/)
+1
+
